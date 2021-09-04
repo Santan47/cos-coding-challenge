@@ -1,0 +1,11 @@
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ConfigService {
+
+  constructor() { }
+
+  // baseUrl = "http://localhost:3000/users";
+}
