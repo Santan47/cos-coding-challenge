@@ -1,21 +1,112 @@
-.header{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 52px;
-    background-color: #485461;
-    background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);
-    color: white;
-    padding: 5px 10px;
+@import url("https://fonts.googleapis.com/css?family=Open+Sans|Playfair+Display+SC");
+* {
+  margin: 0;
+  padding: 0;
 }
 
-.headerItem{
-    font-size: 22px;
-    font-family: sans-serif;
-    font-variant: all-small-caps;
+.hide{
+    display: none;
 }
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+body {
+  font: normal 18px "Open Sans", sans-serif;
+  background: #fafafa;
+  color: #333;
+}
+
+/* main {
+  min-height: 100vh;
+} */
+
+header {
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sticky{
+    position: fixed;
+    z-index: 9999;
+    width: 100%;
+    top: 0px;
+    height: 100px;
+}
+
+h1 {
+  font: normal 4em "Playfair Display SC", serif;
+  text-align: center;
+}
+
+nav {
+  max-width: 800px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+nav a {
+  flex-grow: 1;
+  text-align: center;
+  padding: 1em;
+  position: relative;
+}
+
+nav a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform: scaleX(0);
+  background: #333;
+  transition: 0.7s transform cubic-bezier(0.06, 0.9, 0.28, 1);
+}
+
+nav a:hover::after {
+  transform: scaleX(1);
+}
+
 
 .gallerySlide{
-    margin: 20px;
+    margin: 100px 20px 0px 20px;
     height: calc(100vh - 101px);
 }
+
+.gelleryRows{
+    display: flex;
+}
+
+p{
+    margin: 5px 0px !important;
+}
+
+.mat-card{
+    margin: 10px !important;
+}
+
+table, th, td {
+    border: 2px solid black !important;
+    padding: 5px;
+    text-align: center;
+}
+
+table{
+    width: 100% !important;
+}
+
+th{
+    width: 33.33% !important;
+}
+
+.carTitle{
+    font-size: 18px;
+    margin: 8px 0px;
+}
+  
+  

@@ -1,19 +1,45 @@
 <div>
     <div>
-        <div class="header">
-            <!-- <div class="headerItem">
-                <i class="fa fa-bars"></i>
-            </div> -->
-            <div class="headerItem">
-                Dashboard
-            </div>
-            <!-- <div class="headerItem">
-                <i class="fa fa-chevron-left"></i>
-            </div> -->
-        </div>
         <div>
+          <main>
+            <header class="sticky">
+                <h1>Car On Sale</h1>
+            </header>
+          </main>
             <div class="gallerySlide">
-                content
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-sm-4" *ngFor="let carItem of carDetailsArrayOfJson.items">
+                    <mat-card class="example-card" >
+                        <img mat-card-image src="{{carItem.associatedVehicle.vehicleImages[0].url}}" alt="Photo of a Shiba Inu">
+                        <mat-card-content>
+                          <div class="carTitle"><strong>{{carItem.label}}</strong></div>
+                          <table>
+                            <tr>
+                              <th>Fuel Type</th>
+                              <th>Mileage In KM</th>
+                              <th>Transmission</th>
+                            </tr>
+                            <tr>
+                              <td>{{carItem.associatedVehicle.fuelType}}</td>
+                              <td>{{carItem.associatedVehicle.mileageInKm}}</td>
+                              <td>{{carItem.associatedVehicle.transmission}}</td>
+                            </tr>
+                          </table>
+                          <p><strong>Current Highest BID :</strong> {{carItem.currentHighestBidValue | currency:'EUR'}}</p>
+                          <p><strong>Remaining Time :</strong> {{carItem.remainingTimeInSeconds | calcRemainingTime:carItem.remainingTimeInSeconds}}</p>
+                          <p *ngIf = "carItem.amIHighestBidder == 'true' then ifBlock else elseBlock"></p>
+                          <ng-template #ifBlock >
+                            <p><strong>Am I The Highest Bidder : </strong>YES</p>
+                          </ng-template>
+                          <ng-template #elseBlock >
+                            <p><strong>Am I The Highest Bidder : </strong>No</p>
+                          </ng-template>
+                        </mat-card-content>
+                    </mat-card>
+                  </div>
+                </div>
+              </div>     
             </div>
         </div>
         

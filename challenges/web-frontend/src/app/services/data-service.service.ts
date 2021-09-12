@@ -1,36 +1,42 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { ConfigService } from './config.service';
-// import { text } from '@angular/core/src/render3';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataServiceService {
 
-  constructor(public http: HttpClient, public config: ConfigService) { }
+  baseUrl : "https://api-core-dev.caronsale.de/api";
+  public selectedData:any = {};
 
-  postQuery(text){
-    let promise = new Promise((resolve, reject) => {
-      let apiURL = "http://localhost:4200/users";
-      let obj = {"Query":text}
-      let headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-       });
-      let options = { headers: headers }
-      this.http.post(apiURL, obj ,options)
-      .toPromise()
-      .then(
-        res => { // Success
-          debugger
-        resolve(res);
-        },
-        err => { // Error
-          debugger
-        reject(err);
-        }
-      );
+  constructor(public http: HttpClient) { }
+
+  setSelectedAgentData(selectedTableRowData){
+    this.selectedData = selectedTableRowData;
+  }
+  getSelectedAgentData(){
+    return this.selectedData;
+  }
+
+  getDashboardDetails(){
+    return new Promise(function (resolve, reject) {
+      let carData;
+      let headersList = {
+        "userid": window.localStorage.getItem('userEmail'),
+        "authtoken": window.localStorage.getItem('token')
+      }
+
+      const apiUrl = "https://api-core-dev.caronsale.de/api/v2/auction/buyer/?filter="+window.localStorage.getItem('userEmail')+"&count=false";
+
+      fetch(apiUrl, { 
+        method: "GET",
+        headers: headersList
+      }).then(function(response) {
+        return response.text();
+      }).then(function(data) {
+        carData = JSON.parse(data);
+        resolve(carData)
+      })
     });
-    return promise;
   }
 }

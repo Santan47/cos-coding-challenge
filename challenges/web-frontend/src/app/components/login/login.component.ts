@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-// import { promise } from 'protractor';
 import Swal from 'sweetalert2'
-// import {DataServiceService} from '../../services/data-service.service';
+import { Router } from '@angular/router';
+import * as $ from 'jquery';
 declare var $: any;
 @Component({
   selector: 'app-login',
@@ -10,63 +10,80 @@ declare var $: any;
 })
 export class LoginComponent implements OnInit {
   title = 'login';
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    let baseUrl = "https://api-core-dev.caronsale.de/api";
-    function Login(email,password){
-      return new Promise((resolve,reject) => {
-        fetch(baseUrl + "/v1/authentication/"+email+"/registered")
-          .then(res => {
-            if(res["status"] == 204){
-              resolve({
-                "result":"submitted",
-                "ids":email+password,
-                "data":res
-              })
-            }
-            else{
-              Swal.fire({
-                icon: 'error',
-                title: 'Sorry!',
-                text: 'Your Email is not registred!'
-              })
-            }
-            // console.log(res)
-          })
-      })
-      // -----------------------------------------------------------------------------------------------
-    }
-
-    function validateEmail(email) {
-      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(String(email).toLowerCase());
-    }
-
-    $('.btn').click(function(e){
-      let email = $("#email").val()
-      let password = $("#passwd").val()
-      console.log("s");
-      if(validateEmail(email)){// if(email == "salesman@random.com" && password == "123test" || email == "dealership@alwaysAvailable.com" && password == "test123"){
-          Login(email,password).then((data) => {
-            // console.log(data);
-            window.location.replace('http://localhost:4200/dashboard');
-          }).catch((err) => {
-            Swal.fire({
-                  icon: 'error',
-                  title: 'Sorry!',
-                  text: 'Please enter correct credentials.'
-                })
-          });
-      }else{
-        Swal.fire({
-          icon: 'error',
-          title: 'Sorry!',
-          text: 'Please enter correct email.'
-        })
-      }
-    })
-
   }
 
+
+  validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+  generateToken(email,passwd){
+    let baseUrl = "https://api-core-dev.caronsale.de/api";
+    return new Promise((resolve,reject) => {
+      const data = {  
+                    "password": passwd,  
+                    "meta": "string" 
+                  };
+      fetch(baseUrl+'/v1/authentication/'+email, {
+        method: 'PUT', // or 'PUT'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        resolve(data)
+      })
+      .catch((error) => {
+        reject(error)
+        console.error('Error:', error);
+      });
+    })
+  }
+
+  // $('.btn').click(function(e){
+  onsubmit(){
+    let email = $("#email").val()
+    let password = $("#passwd").val()
+    if(this.validateEmail(email)){
+      this.generateToken(email,password).then((dataToken) => {
+          if(dataToken['msgKey']!='user.not-authenticated')
+          {
+            
+            window.localStorage.setItem("userEmail",email);
+            window.localStorage.setItem("token",dataToken["token"]);
+            this.router.navigate(['dashboard'])
+          }
+          else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Sorry!',
+              text: 'Please enter correct credentials.'
+            })
+          }
+
+        }).catch((err) => {
+          Swal.fire({
+                icon: 'error',
+                title: 'Sorry!',
+                text: 'Please enter correct credentials.'
+              })
+        });
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Sorry!',
+        text: 'Please enter correct email.'
+      })
+    }
+  }
+
+  // navDashboard() {
+  //   this.router.navigate(['/dashboard']);
+  // }
 }
